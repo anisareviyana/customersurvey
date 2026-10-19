@@ -1,0 +1,6 @@
+{
+  "summary": "Rencana implementasi pemindahan fitur unggah dokumen non-visa dari halaman Visa ke halaman Sertifikasi & Paspor (Step 2), termasuk integrasi upload dinamis per item (Sertifikat BNSP, scan Paspor, dan Sertifikat First Aid / CPR) saat opsi terkait dipilih aktif.",
+  "updatedAt": "2026-10-19T07:15:14.608804951Z",
+  "requestFeedback": true,
+  "userFacing": true
+}

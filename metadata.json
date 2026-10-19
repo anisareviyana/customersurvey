@@ -1,5 +1,6 @@
 {
-  "name": "Panorama Survey",
-  "description": "A modern, minimalist mobile survey application for tour feedback with an orange theme.",
-  "requestFramePermissions": []
+  "name": "Tour Leader Profiling",
+  "description": "Aplikasi mobile modern minimalis bernuansa oranye untuk pengumpulan data profiling dan portofolio Tour Leader.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

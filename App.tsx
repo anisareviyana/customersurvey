@@ -1,201 +1,544 @@
 import React, { useState } from 'react';
-import { INITIAL_DATA, SurveyData } from './types';
+import { INITIAL_PROFILE, TourLeaderProfile } from './types';
+import { WelcomePage } from './components/WelcomePage';
 import { Step1 } from './components/steps/Step1';
 import { Step2 } from './components/steps/Step2';
+import { StepVisa } from './components/steps/StepVisa';
 import { Step3 } from './components/steps/Step3';
 import { Step4 } from './components/steps/Step4';
-import { Step5 } from './components/steps/Step5';
-import { Step6 } from './components/steps/Step6';
-import { Step7 } from './components/steps/Step7';
+import { BadgeCard } from './components/ui/BadgeCard';
 import { Button } from './components/ui/Button';
-import { ChevronLeft, ChevronRight, Check, MapPin } from 'lucide-react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Compass,
+  CheckCircle2,
+  Sparkles,
+  Smartphone,
+  Maximize2,
+  Copy,
+  RotateCcw,
+  Check,
+  Zap,
+  Wifi,
+  BatteryMedium,
+  Signal
+} from 'lucide-react';
+
+const SAMPLE_PROFILING_DATA: TourLeaderProfile = {
+  fullName: 'Arif Wibisono, S.Par',
+  nickname: 'Arif',
+  gender: 'Pria',
+  phone: '0812-8899-7721',
+  email: 'arif.wibisono@panoramatours.id',
+  city: 'Jabodetabek',
+  cityOther: '',
+  uniformSize: 'L',
+  instagram: '@arif.adventure',
+  avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80',
+
+  yearsExperience: '3 - 5 Tahun',
+  totalTripsCount: '26 - 50 Trip',
+  domesticDestinations: ['Bali & Nusa Penida', 'Labuan Bajo & Komodo', 'Yogyakarta, Solo & Semarang', 'Bromo, Malang & Ijen'],
+  internationalDestinations: ['Asia Timur (Jepang & Korea)', 'Asia Tenggara (SG, MY, TH, VN)', 'Eropa Barat & Tengah'],
+  preferredGroupType: ['Corporate Gathering & MICE', 'Incentive VIP & Luxury Travelers', 'Keluarga & Lansia'],
+
+  bnspStatus: 'Bersertifikat Resmi BNSP',
+  bnspNumber: 'REG.PAR.042.00192.2024',
+  passportStatus: 'Aktif (> 1 Tahun)',
+  passportExpiry: '08/2029',
+  activeVisas: ['Visa Schengen', 'Visa Jepang', 'Visa Australia'],
+  firstAidCertified: 'Bersertifikat CPR / P3K',
+  documents: [
+    {
+      id: 'doc_sample_1',
+      name: 'Scan_Visa_Schengen_Multiple_2026.pdf',
+      size: 1420000,
+      type: 'application/pdf',
+      category: 'Visa',
+      visaName: 'Visa Schengen',
+      uploadedAt: '12 Okt 2026, 14:30'
+    },
+    {
+      id: 'doc_sample_2',
+      name: 'Sertifikat_Kompetensi_BNSP_Tour_Leader.pdf',
+      size: 2150000,
+      type: 'application/pdf',
+      category: 'Sertifikat BNSP',
+      uploadedAt: '12 Okt 2026, 14:32'
+    }
+  ],
+
+  languages: [
+    { language: 'Bahasa Indonesia', level: 'Fasih (Fluent)' },
+    { language: 'Bahasa Inggris', level: 'Fasih (Fluent)' },
+    { language: 'Bahasa Jepang', level: 'Menengah' }
+  ],
+  guidingStyle: 'Energetik & Humoris',
+  specialSkills: ['Fotografi & Video Reels', 'Ice Breaking & MC', 'P3K & Medis Lapangan', 'Kuliner & Street Food'],
+  personalBio: 'Berkomitmen menyajikan pengalaman liburan yang aman, penuh kehangatan, dokumentasi estetik, dan kenangan tak terlupakan bagi setiap tamu.',
+
+  availabilityStatus: 'Siap Kapan Saja',
+  assignmentScope: 'Siap Domestik & Internasional',
+  emergencyContactName: 'Dewi Anggraini',
+  emergencyContactRelation: 'Istri',
+  emergencyContactPhone: '0813-7722-1100',
+  dataConsent: true,
+};
 
 function App() {
+  const [isStarted, setIsStarted] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<SurveyData>(INITIAL_DATA);
+  const [formData, setFormData] = useState<TourLeaderProfile>(INITIAL_PROFILE);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [isDeviceFrame, setIsDeviceFrame] = useState(true);
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const [copiedNotification, setCopiedNotification] = useState(false);
 
-  const totalSteps = 7;
+  const totalSteps = 5;
 
-  const updateData = (fields: Partial<SurveyData>) => {
+  const updateData = (fields: Partial<TourLeaderProfile>) => {
     setFormData(prev => ({ ...prev, ...fields }));
+    if (validationError) setValidationError(null);
   };
 
-  const validateStep = (step: number): boolean => {
+  const loadSampleData = () => {
+    setFormData(SAMPLE_PROFILING_DATA);
+    setValidationError(null);
+    if (!isStarted) {
+      setIsStarted(true);
+    }
+  };
+
+  const validateStep = (step: number): { valid: boolean; error?: string } => {
     switch (step) {
       case 1:
-        // Step 1: Informasi Dasar
-        const companionsValid = formData.companions === 'Lainnya' 
-            ? !!formData.companions_other 
-            : !!formData.companions;
-        return companionsValid && !!formData.tourFrequency;
-      
-      case 2:
-        // Step 2: Perjalanan Anda (Previously Step 4)
-        return !!formData.trip_attractions && !!formData.trip_hotel_loc && !!formData.trip_breakfast &&
-               !!formData.trip_food && !!formData.trip_transport && !!formData.trip_expectations;
-      
-      case 3:
-        // Step 3: Layanan Tour Leader (Previously Step 2)
-        return !!formData.tl_schedule && !!formData.tl_helpful && !!formData.tl_informative && 
-               !!formData.tl_atmosphere && !!formData.tl_polite && !!formData.tl_expectations;
-      
-      case 4:
-        // Step 4: Layanan Lokal Guide (Previously Step 3)
-        if (formData.hasLocalGuide === 'Tidak') return true;
-        if (formData.hasLocalGuide === 'Ya') {
-            return !!formData.lg_schedule && !!formData.lg_helpful && !!formData.lg_informative &&
-                   !!formData.lg_atmosphere && !!formData.lg_polite && !!formData.lg_expectations;
+        if (!formData.yearsExperience) return { valid: false, error: 'Mohon pilih Lama Pengalaman memandu tur.' };
+        if (!formData.totalTripsCount) return { valid: false, error: 'Mohon pilih Estimasi Jumlah Trip yang pernah dipandu.' };
+        if (!formData.domesticDestinations || formData.domesticDestinations.length === 0) {
+          return { valid: false, error: 'Pilih minimal satu Destinasi Domestik yang Anda kuasai.' };
         }
-        return false;
-      
+        if (!formData.preferredGroupType || formData.preferredGroupType.length === 0) {
+          return { valid: false, error: 'Pilih minimal satu Kategori Wisatawan yang nyaman Anda pandu.' };
+        }
+        return { valid: true };
+
+      case 2:
+        if (!formData.bnspStatus) return { valid: false, error: 'Mohon pilih Status Sertifikasi Profesi BNSP Anda.' };
+        if (!formData.passportStatus) return { valid: false, error: 'Mohon tentukan Status Dokumen Paspor Anda.' };
+        if (!formData.firstAidCertified) return { valid: false, error: 'Mohon pilih Keahlian Pertolongan Pertama (First Aid).' };
+        return { valid: true };
+
+      case 3:
+        // Visa Step: Opsional / verifikasi dokumen visa
+        return { valid: true };
+
+      case 4:
+        if (!formData.languages || formData.languages.length === 0) return { valid: false, error: 'Cantumkan minimal satu kemampuan bahasa.' };
+        if (!formData.guidingStyle) return { valid: false, error: 'Pilih Gaya Memandu utama Anda.' };
+        if (!formData.personalBio.trim()) return { valid: false, error: 'Tuliskan Bio / Motto Pelayanan singkat Anda.' };
+        return { valid: true };
+
       case 5:
-        // Step 5: Sumber Info
-        const knowledgeValid = formData.source_knowledge === 'Lainnya' 
-            ? !!formData.source_knowledge_other 
-            : !!formData.source_knowledge;
-        const contactValid = formData.source_contact === 'Lainnya'
-            ? !!formData.source_contact_other
-            : !!formData.source_contact;
-        return knowledgeValid && contactValid;
-      
-      case 6:
-        // Step 6: Minat & Rekomendasi
-        const destValid = formData.dream_destination === 'Lainnya'
-            ? !!formData.dream_destination_other
-            : !!formData.dream_destination;
-        return destValid && formData.nps_score !== null && !!formData.social_share;
-      
-      case 7:
-        // Step 7: Story
-        return true;
+        if (!formData.availabilityStatus) return { valid: false, error: 'Mohon tentukan Status Ketersediaan Penugasan Anda.' };
+        if (!formData.assignmentScope) return { valid: false, error: 'Pilih Cakupan Rute Penugasan Anda.' };
+        if (!formData.emergencyContactName.trim()) return { valid: false, error: 'Mohon isi Nama Kontak Darurat.' };
+        if (!formData.emergencyContactPhone.trim()) return { valid: false, error: 'Mohon isi Nomor Telepon Kontak Darurat.' };
+        if (!formData.dataConsent) return { valid: false, error: 'Anda harus menyetujui Pernyataan Kebenaran Data sebelum mengirim profil.' };
+        return { valid: true };
+
       default:
-        return false;
+        return { valid: true };
     }
   };
 
   const handleNext = () => {
-    if (validateStep(currentStep)) {
+    const result = validateStep(currentStep);
+    if (result.valid) {
+      setValidationError(null);
       if (currentStep < totalSteps) {
         setCurrentStep(prev => prev + 1);
-        window.scrollTo(0, 0);
+        const scrollElem = document.getElementById('step-scroll-area');
+        if (scrollElem) scrollElem.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
         handleSubmit();
       }
     } else {
-      alert("Mohon lengkapi semua pertanyaan bertanda * sebelum melanjutkan.");
+      setValidationError(result.error || 'Mohon lengkapi data yang bertanda bintang (*)');
     }
   };
 
   const handleBack = () => {
+    setValidationError(null);
     if (currentStep > 1) {
       setCurrentStep(prev => prev - 1);
-      window.scrollTo(0, 0);
+      const scrollElem = document.getElementById('step-scroll-area');
+      if (scrollElem) scrollElem.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      // Back from step 1 returns to Welcome Page
+      setIsStarted(false);
     }
   };
 
   const handleSubmit = () => {
-    console.log('Survey Submitted:', formData);
     setIsCompleted(true);
   };
 
+  const copyProfileSummary = () => {
+    const docsSummary = formData.documents && formData.documents.length > 0
+      ? formData.documents.map(d => `${d.name} (${d.category})`).join(', ')
+      : 'Belum ada dokumen diunggah';
+
+    const summaryText = `[PROFIL TOUR LEADER PANORAMA]
+Nama: ${formData.fullName} (${formData.nickname})
+Domisili: ${formData.city === 'Lainnya' ? formData.cityOther : formData.city}
+Kontak: ${formData.phone} | ${formData.email}
+Instagram: ${formData.instagram || '-'}
+Ukuran Seragam: ${formData.uniformSize}
+Pengalaman: ${formData.yearsExperience} (${formData.totalTripsCount})
+BNSP: ${formData.bnspStatus} ${formData.bnspNumber ? `(${formData.bnspNumber})` : ''}
+Paspor: ${formData.passportStatus}
+Visa Aktif: ${formData.activeVisas?.join(', ') || '-'}
+Dokumen Lampiran (PDF): ${docsSummary}
+Gaya Memandu: ${formData.guidingStyle}
+Bahasa: ${formData.languages?.map(l => `${l.language} [${l.level}]`).join(', ') || '-'}
+Destinasi Domestik: ${formData.domesticDestinations?.join(', ') || '-'}
+Destinasi Outbound: ${formData.internationalDestinations?.join(', ') || '-'}
+Ketersediaan: ${formData.availabilityStatus} (${formData.assignmentScope})
+Motto: "${formData.personalBio}"`;
+
+    navigator.clipboard.writeText(summaryText);
+    setCopiedNotification(true);
+    setTimeout(() => setCopiedNotification(false), 3000);
+  };
+
+  // View when profiling completed
   if (isCompleted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-50 flex items-center justify-center p-6">
-        <div className="max-w-md w-full bg-white rounded-[2.5rem] p-10 shadow-2xl shadow-orange-100/50 text-center animate-fade-in border border-white">
-            <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-8 animate-slide-up">
-                <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center shadow-lg shadow-green-500/30">
-                    <Check className="w-8 h-8 text-white" strokeWidth={3} />
-                </div>
+      <div className="min-h-screen bg-gradient-to-br from-orange-100/60 via-amber-50/40 to-orange-50 font-sans flex items-center justify-center p-4 sm:p-6 select-none relative overflow-hidden">
+        {/* Ambient glows */}
+        <div className="fixed -top-20 -left-20 w-96 h-96 bg-primary-400/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="fixed -bottom-20 -right-20 w-96 h-96 bg-orange-500/20 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-md w-full bg-white/95 rounded-[2.5rem] p-6 sm:p-8 shadow-2xl shadow-orange-950/10 text-center animate-fade-in border border-orange-100/80 backdrop-blur-md relative z-10">
+          {/* Badge Icon */}
+          <div className="relative inline-block mx-auto mb-4">
+            <div className="w-20 h-20 bg-gradient-to-tr from-primary-500 to-amber-500 rounded-3xl flex items-center justify-center shadow-lg shadow-primary-500/30 text-white animate-bounce-short">
+              <CheckCircle2 className="w-10 h-10" />
             </div>
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">Terima Kasih!</h2>
-            <p className="text-gray-500 mb-10 leading-relaxed">Masukan Anda sangat berarti bagi kami untuk meningkatkan pelayanan Panorama JTB.</p>
-            <Button fullWidth onClick={() => window.location.reload()}>
-                Kembali ke Beranda
+            <div className="absolute -top-1 -right-1 bg-white text-amber-500 p-1.5 rounded-full shadow-md">
+              <Sparkles className="w-4 h-4" />
+            </div>
+          </div>
+
+          <h2 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight mb-1">
+            Profil Berhasil Disimpan!
+          </h2>
+          <p className="text-gray-500 text-xs sm:text-sm mb-6 leading-relaxed">
+            Data profiling Anda telah tercatat dalam sistem Tour Leader Panorama. Berikut adalah pratinjau ID Badge resmi Anda.
+          </p>
+
+          {/* Render Digital Badge Card */}
+          <div className="mb-4 text-left">
+            <BadgeCard profile={formData} />
+          </div>
+
+          {/* Uploaded Documents Notification Box */}
+          {formData.documents && formData.documents.length > 0 && (
+            <div className="mb-6 p-3 bg-orange-50/80 rounded-2xl border border-orange-200/80 text-left text-xs">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="font-bold text-gray-800 flex items-center gap-1.5 text-[11px] uppercase tracking-wider">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                  Dokumen Legalitas & Visa ({formData.documents.length})
+                </span>
+                <span className="text-[10px] font-bold text-primary-700 bg-white px-2 py-0.5 rounded-full border border-orange-200">
+                  Tersimpan
+                </span>
+              </div>
+              <div className="space-y-1">
+                {formData.documents.map((d) => (
+                  <div key={d.id} className="flex items-center gap-1.5 text-[11px] text-gray-600 truncate">
+                    <span className="font-bold text-red-600 bg-red-100/80 px-1 py-0.2 rounded text-[9px]">
+                      {d.type.includes('pdf') || d.name.endsWith('.pdf') ? 'PDF' : 'FILE'}
+                    </span>
+                    <span className="font-medium truncate">{d.name}</span>
+                    <span className="text-gray-400">({d.category})</span>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-2 pt-2 border-t border-orange-200/60 text-[10px] text-amber-900 flex items-start gap-1.5 bg-amber-100/60 p-2 rounded-xl leading-relaxed">
+                <span className="font-bold flex-shrink-0">Disclaimer:</span>
+                <span>Dokumen bersifat rawan dan kami tidak bertanggung jawab jika terjadi sesuatu dengan berkas dokumen tersebut.</span>
+              </div>
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="space-y-3">
+            <Button
+              fullWidth
+              onClick={copyProfileSummary}
+              className="flex items-center justify-center gap-2"
+            >
+              {copiedNotification ? (
+                <>
+                  <Check className="w-4 h-4" />
+                  Ringkasan Tersalin ke Clipboard!
+                </>
+              ) : (
+                <>
+                  <Copy className="w-4 h-4" />
+                  Salin Ringkasan Profil
+                </>
+              )}
             </Button>
+
+            <div className="grid grid-cols-2 gap-2.5">
+              <Button
+                variant="secondary"
+                onClick={() => setIsCompleted(false)}
+                className="flex items-center justify-center gap-1.5 text-xs sm:text-sm py-3"
+              >
+                <ChevronLeft className="w-4 h-4" /> Edit Data
+              </Button>
+
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setFormData(INITIAL_PROFILE);
+                  setCurrentStep(1);
+                  setIsCompleted(false);
+                  setIsStarted(false);
+                }}
+                className="flex items-center justify-center gap-1.5 text-xs sm:text-sm py-3"
+              >
+                <RotateCcw className="w-3.5 h-3.5" /> Profil Baru
+              </Button>
+            </div>
+          </div>
+
+          <p className="text-[11px] text-gray-400 mt-5">
+            Data diri diambil secara otomatis dari Menu Profil Anda. Tim Operasional akan memvalidasi dokumen untuk penugasan trip.
+          </p>
         </div>
       </div>
-    )
+    );
   }
 
-  const progress = (currentStep / totalSteps) * 100;
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-orange-50/30 to-white font-sans flex justify-center">
-      {/* Decorative Background Blobs */}
-      <div className="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-orange-200/20 rounded-full blur-[100px] pointer-events-none" />
-      <div className="fixed bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-primary-200/10 rounded-full blur-[100px] pointer-events-none" />
+    <div className="min-h-screen bg-gradient-to-br from-orange-100/50 via-[#FAF7F2] to-amber-50/60 font-sans flex flex-col items-center justify-start p-2 sm:p-6 relative selection:bg-primary-100 selection:text-primary-900">
+      {/* Decorative Warm Ambient Elements */}
+      <div className="fixed top-[-10%] left-[-10%] w-[550px] h-[550px] bg-primary-200/25 rounded-full blur-[120px] pointer-events-none" />
+      <div className="fixed bottom-[-10%] right-[-10%] w-[550px] h-[550px] bg-orange-300/20 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="w-full max-w-md relative flex flex-col min-h-screen bg-white/50 shadow-2xl shadow-gray-200/40 sm:my-8 sm:min-h-[calc(100vh-4rem)] sm:rounded-[2.5rem] overflow-hidden border border-white/60 backdrop-blur-sm">
-        
-        {/* Header / Top Bar */}
-        <div className="sticky top-0 z-50 glass-effect border-b border-white/20">
-          <div className="px-6 py-5 flex items-center justify-between">
-             <div>
-                <h1 className="text-lg font-extrabold text-primary-600 tracking-tight flex items-center gap-2">
-                    <MapPin className="w-5 h-5" /> PANORAMA JTB
-                </h1>
-             </div>
-             <div className="flex items-center gap-3">
-                 <div className="text-[10px] font-bold text-primary-600 bg-primary-50 px-3 py-1 rounded-full uppercase tracking-wider">
-                    Step {currentStep} of {totalSteps}
-                 </div>
-             </div>
+      {/* Top Utility Bar (Demo Pre-fill & Frame Mode Toggle) */}
+      <header className="w-full max-w-md sm:max-w-xl mb-3 flex items-center justify-between px-2 sm:px-1 z-20">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-primary-500 to-amber-500 flex items-center justify-center text-white shadow-md shadow-primary-500/20">
+            <Compass className="w-4 h-4" />
           </div>
-          {/* Custom Progress Bar */}
-          <div className="h-1.5 w-full bg-gray-100/50">
-            <div 
-                className="h-full bg-gradient-to-r from-primary-400 to-primary-600 transition-all duration-500 ease-out rounded-r-full shadow-[0_0_10px_rgba(249,115,22,0.5)]"
-                style={{ width: `${progress}%` }}
+          <div>
+            <span className="text-[10px] uppercase tracking-widest font-black text-primary-600 block leading-none">
+              PANORAMA JTB
+            </span>
+            <span className="text-xs font-bold text-gray-800 leading-tight">
+              Tour Leader Profiling
+            </span>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={loadSampleData}
+            className="text-[11px] font-semibold bg-orange-100/80 hover:bg-orange-200 text-primary-800 px-2.5 py-1.5 rounded-xl transition-all flex items-center gap-1 active:scale-95"
+            title="Isi form secara otomatis dengan contoh data profiling"
+          >
+            <Zap className="w-3 h-3 text-primary-600 fill-primary-600" />
+            <span className="hidden xs:inline">Isi Contoh</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setIsDeviceFrame(!isDeviceFrame)}
+            className="text-[11px] font-semibold bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 px-2.5 py-1.5 rounded-xl transition-all flex items-center gap-1 shadow-2xs"
+            title={isDeviceFrame ? "Ubah ke tampilan lebar" : "Ubah ke frame HP"}
+          >
+            {isDeviceFrame ? (
+              <>
+                <Maximize2 className="w-3 h-3 text-gray-500" />
+                <span className="hidden xs:inline">Lebar</span>
+              </>
+            ) : (
+              <>
+                <Smartphone className="w-3 h-3 text-gray-500" />
+                <span className="hidden xs:inline">Mobile Frame</span>
+              </>
+            )}
+          </button>
+        </div>
+      </header>
+
+      {/* Main Mobile Shell Container */}
+      <div
+        className={`w-full relative flex flex-col transition-all duration-300 ${
+          isDeviceFrame
+            ? 'max-w-[390px] sm:rounded-[3rem] sm:border-[8px] sm:border-gray-900 sm:shadow-2xl sm:shadow-orange-950/20 sm:my-2 min-h-[92vh] sm:min-h-[820px] bg-white'
+            : 'max-w-xl rounded-3xl border border-white/80 shadow-xl bg-white/90 my-2 min-h-[90vh]'
+        } overflow-hidden backdrop-blur-md`}
+      >
+        {/* Realistic Mobile Status Bar matching screenshot */}
+        {isDeviceFrame && (
+          <div className="flex items-center justify-between px-6 pt-3 pb-1 text-gray-800 select-none z-50 bg-white">
+            <span className="text-xs font-bold tracking-tight">9:46</span>
+            
+            {/* Front Camera Punch-hole */}
+            <div className="w-4 h-4 bg-black rounded-full flex items-center justify-center -ml-1">
+              <div className="w-1.5 h-1.5 bg-gray-900 rounded-full" />
+            </div>
+
+            <div className="flex items-center gap-1.5 text-gray-800">
+              <Signal className="w-3 h-3" />
+              <Wifi className="w-3.5 h-3.5" />
+              <BatteryMedium className="w-4 h-4" />
+            </div>
+          </div>
+        )}
+
+        {/* View Switch: Welcome Screen vs Questionnaire Flow */}
+        {!isStarted ? (
+          <div className="flex-1 flex flex-col justify-between overflow-hidden">
+            <WelcomePage
+              onStart={() => {
+                setIsStarted(true);
+                setCurrentStep(1);
+              }}
+              onBack={() => {
+                // Friendly indication
+              }}
             />
-          </div>
-        </div>
 
-        {/* Content Area */}
-        <main className="flex-1 px-6 py-8 pb-32 overflow-y-auto no-scrollbar scroll-smooth">
-            {currentStep === 1 && <Step1 data={formData} updateData={updateData} />}
-            {currentStep === 2 && <Step2 data={formData} updateData={updateData} />}
-            {currentStep === 3 && <Step3 data={formData} updateData={updateData} />}
-            {currentStep === 4 && <Step4 data={formData} updateData={updateData} />}
-            {currentStep === 5 && <Step5 data={formData} updateData={updateData} />}
-            {currentStep === 6 && <Step6 data={formData} updateData={updateData} />}
-            {currentStep === 7 && <Step7 data={formData} updateData={updateData} />}
-
-            {/* Global Note */}
-            <div className="mt-10 pt-8 border-t border-gray-200/60 text-xs text-gray-400 space-y-2 text-center">
-                <p className="flex items-center justify-center gap-1.5 font-medium">
-                    <span className="text-primary-500 text-sm bg-primary-50 w-5 h-5 flex items-center justify-center rounded-full">*</span> 
-                    Wajib diisi (Mandatory)
-                </p>
-                <p className="opacity-70">
-                    Informasi/feedback yang Anda berikan akan kami jaga kerahasiaannya
-                </p>
-            </div>
-        </main>
-
-        {/* Bottom Navigation */}
-        <div className="absolute bottom-0 left-0 right-0 w-full bg-gradient-to-t from-white via-white to-white/0 p-6 pb-8 z-40">
-            <div className="flex gap-4">
-                {currentStep > 1 && (
-                    <Button 
-                        variant="secondary" 
-                        onClick={handleBack}
-                        className="w-14 flex items-center justify-center !px-0 rounded-2xl"
-                    >
-                        <ChevronLeft className="w-6 h-6 text-gray-600" />
-                    </Button>
-                )}
-                <Button 
-                    fullWidth
-                    className="flex-1 flex items-center justify-center gap-2 shadow-xl shadow-primary-500/20"
-                    onClick={handleNext}
+            {/* Bottom Android Navigation Bar (matching reference image) */}
+            {isDeviceFrame && (
+              <div className="bg-black text-white/70 py-2 px-12 flex items-center justify-between select-none">
+                <button
+                  type="button"
+                  onClick={() => {}}
+                  className="p-1 hover:text-white transition-colors"
+                  title="Back"
                 >
-                    {currentStep === totalSteps ? 'Submit Survey' : 'Selanjutnya'}
-                    {currentStep !== totalSteps && <ChevronRight className="w-5 h-5 opacity-80" />}
-                </Button>
-            </div>
-        </div>
+                  <div className="w-0 h-0 border-y-[6px] border-y-transparent border-r-[10px] border-r-white/80" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsStarted(false)}
+                  className="p-1 hover:text-white transition-colors"
+                  title="Home"
+                >
+                  <div className="w-3.5 h-3.5 rounded-full border-2 border-white/80" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {}}
+                  className="p-1 hover:text-white transition-colors"
+                  title="Recent Apps"
+                >
+                  <div className="w-3.5 h-3.5 rounded-xs border-2 border-white/80" />
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="flex-1 flex flex-col justify-between overflow-hidden relative">
+            {/* Top Navigation Header for Questionnaire */}
+            <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-orange-100/80">
+              <div className="px-4 py-3 flex items-center justify-between relative">
+                <button
+                  type="button"
+                  onClick={handleBack}
+                  className="w-9 h-9 rounded-full bg-orange-100/90 hover:bg-orange-200 active:scale-95 flex items-center justify-center text-primary-600 transition-all shadow-xs z-10"
+                  title="Kembali"
+                >
+                  <ChevronLeft className="w-5 h-5 stroke-[2.5]" />
+                </button>
 
+                <div className="absolute inset-x-0 text-center pointer-events-none flex flex-col items-center justify-center">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-primary-600 leading-tight">
+                    PANORAMA JTB
+                  </span>
+                  <span className="text-xs sm:text-sm font-black text-gray-900 tracking-tight leading-tight">
+                    Tour Leader Profiling
+                  </span>
+                </div>
+
+                {/* Right spacer for balanced title centering */}
+                <div className="w-9 h-9" />
+              </div>
+            </div>
+
+            {/* Validation Warning Banner if any */}
+            {validationError && (
+              <div className="mx-4 mt-2 p-2.5 bg-red-50 border border-red-200 rounded-xl flex items-center gap-2 animate-fade-in z-20">
+                <div className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0" />
+                <p className="text-xs font-semibold text-red-700 flex-1">{validationError}</p>
+              </div>
+            )}
+
+            {/* Scrollable Form Content Area */}
+            <main
+              id="step-scroll-area"
+              className="flex-1 px-4 sm:px-5 py-5 pb-32 overflow-y-auto no-scrollbar scroll-smooth"
+            >
+              {currentStep === 1 && <Step1 data={formData} updateData={updateData} />}
+              {currentStep === 2 && <Step2 data={formData} updateData={updateData} />}
+              {currentStep === 3 && <StepVisa data={formData} updateData={updateData} />}
+              {currentStep === 4 && <Step3 data={formData} updateData={updateData} />}
+              {currentStep === 5 && <Step4 data={formData} updateData={updateData} />}
+
+              {/* Footnote & Guarantee */}
+              <div className="mt-8 pt-5 border-t border-orange-200/50 text-[11px] text-gray-400 space-y-1 text-center">
+                <p className="font-medium text-gray-600">
+                  Data diri tersinkronisasi dari Akun Profil Anda.
+                </p>
+                <p className="opacity-75 text-[10px]">
+                  Data kuesioner ini aman dan khusus untuk penugasan trip Tour Leader.
+                </p>
+              </div>
+            </main>
+
+            {/* Fixed Bottom Navigation Floating Dock */}
+            <div className="absolute bottom-0 left-0 right-0 w-full bg-gradient-to-t from-white via-white/95 to-white/0 p-4 pt-6 pb-4 sm:pb-6 z-40 border-t border-orange-100/50">
+              <div className="flex gap-2.5 items-center">
+                <Button
+                  variant="secondary"
+                  onClick={handleBack}
+                  className="w-12 h-12 flex items-center justify-center !px-0 rounded-2xl"
+                  title="Kembali"
+                >
+                  <ChevronLeft className="w-5 h-5 text-gray-700" />
+                </Button>
+
+                <Button
+                  fullWidth
+                  className="flex-1 h-12 flex items-center justify-center gap-2 shadow-lg shadow-primary-500/25"
+                  onClick={handleNext}
+                >
+                  <span className="font-bold text-sm">
+                    {currentStep === totalSteps ? 'Simpan & Terbitkan Profil' : 'Lanjutkan'}
+                  </span>
+                  {currentStep !== totalSteps && <ChevronRight className="w-4 h-4 opacity-90" />}
+                </Button>
+              </div>
+
+              {/* Bottom Android Bar if in device frame */}
+              {isDeviceFrame && (
+                <div className="hidden sm:flex justify-center mt-3 -mb-1">
+                  <div className="w-28 h-1 bg-gray-300 rounded-full" />
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
