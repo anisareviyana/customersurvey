@@ -8,9 +8,11 @@ interface WelcomePageProps {
 
 export const WelcomePage: React.FC<WelcomePageProps> = ({ onStart, onBack }) => {
   return (
-    <div className="flex flex-col h-full min-h-[640px] justify-between p-5 sm:p-6 bg-white animate-fade-in select-none">
-      {/* Top Header Bar */}
-      <div>
+    <div className="flex-1 min-h-0 flex flex-col justify-between overflow-hidden bg-white animate-fade-in select-none">
+      {/* Scrollable Screen Content */}
+      <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar p-5 sm:p-6 flex flex-col justify-between">
+        {/* Top Header Bar */}
+        <div>
         <div className="flex items-center justify-between relative py-2 mb-4">
           <button
             type="button"
@@ -257,13 +259,14 @@ export const WelcomePage: React.FC<WelcomePageProps> = ({ onStart, onBack }) => 
           Complete your profile to get matched with the right tours.
         </p>
       </div>
+      </div>
 
-      {/* Bottom Start Button matching design */}
-      <div className="pt-2">
+      {/* Pinned Bottom Start Button matching design */}
+      <div className="p-4 sm:p-5 bg-white border-t border-orange-100/60 shadow-xs z-10">
         <button
           type="button"
           onClick={onStart}
-          className="w-full bg-[#0B0F19] hover:bg-gray-900 active:scale-[0.98] text-white py-4 px-6 rounded-full font-bold text-sm sm:text-base flex items-center justify-center relative shadow-xl shadow-gray-950/20 transition-all group"
+          className="w-full bg-[#0B0F19] hover:bg-gray-900 active:scale-[0.98] text-white py-3.5 sm:py-4 px-6 rounded-full font-bold text-sm sm:text-base flex items-center justify-center relative shadow-xl shadow-gray-950/20 transition-all group"
         >
           {/* Subtle Decorative Star Icon on Left (as in screenshot) */}
           <div className="absolute left-3.5 w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-orange-400 group-hover:scale-110 transition-transform">

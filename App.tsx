@@ -14,10 +14,6 @@ import {
   CheckCircle2,
   Sparkles,
   Smartphone,
-  Maximize2,
-  Copy,
-  RotateCcw,
-  Check,
   Zap,
   Wifi,
   BatteryMedium,
@@ -92,9 +88,7 @@ function App() {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<TourLeaderProfile>(INITIAL_PROFILE);
   const [isCompleted, setIsCompleted] = useState(false);
-  const [isDeviceFrame, setIsDeviceFrame] = useState(true);
   const [validationError, setValidationError] = useState<string | null>(null);
-  const [copiedNotification, setCopiedNotification] = useState(false);
 
   const totalSteps = 5;
 
@@ -185,34 +179,6 @@ function App() {
     setIsCompleted(true);
   };
 
-  const copyProfileSummary = () => {
-    const docsSummary = formData.documents && formData.documents.length > 0
-      ? formData.documents.map(d => `${d.name} (${d.category})`).join(', ')
-      : 'Belum ada dokumen diunggah';
-
-    const summaryText = `[PROFIL TOUR LEADER PANORAMA]
-Nama: ${formData.fullName} (${formData.nickname})
-Domisili: ${formData.city === 'Lainnya' ? formData.cityOther : formData.city}
-Kontak: ${formData.phone} | ${formData.email}
-Instagram: ${formData.instagram || '-'}
-Ukuran Seragam: ${formData.uniformSize}
-Pengalaman: ${formData.yearsExperience} (${formData.totalTripsCount})
-BNSP: ${formData.bnspStatus} ${formData.bnspNumber ? `(${formData.bnspNumber})` : ''}
-Paspor: ${formData.passportStatus}
-Visa Aktif: ${formData.activeVisas?.join(', ') || '-'}
-Dokumen Lampiran (PDF): ${docsSummary}
-Gaya Memandu: ${formData.guidingStyle}
-Bahasa: ${formData.languages?.map(l => `${l.language} [${l.level}]`).join(', ') || '-'}
-Destinasi Domestik: ${formData.domesticDestinations?.join(', ') || '-'}
-Destinasi Outbound: ${formData.internationalDestinations?.join(', ') || '-'}
-Ketersediaan: ${formData.availabilityStatus} (${formData.assignmentScope})
-Motto: "${formData.personalBio}"`;
-
-    navigator.clipboard.writeText(summaryText);
-    setCopiedNotification(true);
-    setTimeout(() => setCopiedNotification(false), 3000);
-  };
-
   // View when profiling completed
   if (isCompleted) {
     return (
@@ -254,7 +220,7 @@ Motto: "${formData.personalBio}"`;
         </header>
 
         {/* Mobile Smartphone Frame Container */}
-        <div className="w-full max-w-[390px] bg-white sm:rounded-[3rem] sm:border-[8px] sm:border-gray-900 sm:shadow-2xl sm:shadow-orange-950/20 my-1 min-h-[780px] sm:min-h-[820px] flex flex-col justify-between overflow-hidden relative border border-gray-100 backdrop-blur-md animate-fade-in">
+        <div className="w-full max-w-[390px] h-[844px] max-h-[92vh] bg-white sm:rounded-[3rem] sm:border-[8px] sm:border-gray-900 sm:shadow-2xl sm:shadow-orange-950/20 my-1 sm:my-2 flex flex-col justify-between overflow-hidden relative border border-gray-100 backdrop-blur-md animate-fade-in">
           {/* Realistic Mobile Status Bar */}
           <div className="flex items-center justify-between px-6 pt-3 pb-1 text-gray-800 select-none z-50 bg-white">
             <span className="text-xs font-bold tracking-tight">9:46</span>
@@ -293,7 +259,7 @@ Motto: "${formData.personalBio}"`;
           </div>
 
           {/* Scrollable Screen Content */}
-          <div className="flex-1 overflow-y-auto px-5 py-3 text-center">
+          <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar px-5 py-3 text-center">
             {/* Supportive Image Replacing Copy Button */}
             <div className="relative mx-auto my-2 w-48 h-48 sm:w-52 sm:h-52 rounded-2xl overflow-hidden shadow-md shadow-orange-900/10 border-2 border-orange-200 bg-orange-50/60 flex items-center justify-center group">
               <img
@@ -422,8 +388,8 @@ Motto: "${formData.personalBio}"`;
       <div className="fixed top-[-10%] left-[-10%] w-[550px] h-[550px] bg-primary-200/25 rounded-full blur-[120px] pointer-events-none" />
       <div className="fixed bottom-[-10%] right-[-10%] w-[550px] h-[550px] bg-orange-300/20 rounded-full blur-[120px] pointer-events-none" />
 
-      {/* Top Utility Bar (Demo Pre-fill & Frame Mode Toggle) */}
-      <header className="w-full max-w-md sm:max-w-xl mb-3 flex items-center justify-between px-2 sm:px-1 z-20">
+      {/* Top Utility Bar */}
+      <header className="w-full max-w-[390px] mb-2 flex items-center justify-between px-2 sm:px-1 z-20">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-primary-500 to-amber-500 flex items-center justify-center text-white shadow-md shadow-primary-500/20">
             <Compass className="w-4 h-4" />
@@ -446,59 +412,40 @@ Motto: "${formData.personalBio}"`;
             title="Isi form secara otomatis dengan contoh data profiling"
           >
             <Zap className="w-3 h-3 text-primary-600 fill-primary-600" />
-            <span className="hidden xs:inline">Isi Contoh</span>
+            <span className="inline">Isi Contoh</span>
           </button>
 
-          <button
-            type="button"
-            onClick={() => setIsDeviceFrame(!isDeviceFrame)}
-            className="text-[11px] font-semibold bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 px-2.5 py-1.5 rounded-xl transition-all flex items-center gap-1 shadow-2xs"
-            title={isDeviceFrame ? "Ubah ke tampilan lebar" : "Ubah ke frame HP"}
+          <div
+            className="text-[11px] font-semibold bg-white text-gray-700 border border-gray-200 px-2.5 py-1.5 rounded-xl flex items-center gap-1 shadow-2xs"
+            title="Ukuran layar Smartphone (390px)"
           >
-            {isDeviceFrame ? (
-              <>
-                <Maximize2 className="w-3 h-3 text-gray-500" />
-                <span className="hidden xs:inline">Lebar</span>
-              </>
-            ) : (
-              <>
-                <Smartphone className="w-3 h-3 text-gray-500" />
-                <span className="hidden xs:inline">Mobile Frame</span>
-              </>
-            )}
-          </button>
+            <Smartphone className="w-3 h-3 text-primary-600" />
+            <span className="hidden xs:inline">Mobile</span>
+          </div>
         </div>
       </header>
 
-      {/* Main Mobile Shell Container */}
-      <div
-        className={`w-full relative flex flex-col transition-all duration-300 ${
-          isDeviceFrame
-            ? 'max-w-[390px] sm:rounded-[3rem] sm:border-[8px] sm:border-gray-900 sm:shadow-2xl sm:shadow-orange-950/20 sm:my-2 min-h-[92vh] sm:min-h-[820px] bg-white'
-            : 'max-w-xl rounded-3xl border border-white/80 shadow-xl bg-white/90 my-2 min-h-[90vh]'
-        } overflow-hidden backdrop-blur-md`}
-      >
+      {/* Main Mobile Shell Container (Locked to exact phone dimensions) */}
+      <div className="w-full max-w-[390px] h-[844px] max-h-[92vh] sm:rounded-[3rem] sm:border-[8px] sm:border-gray-900 sm:shadow-2xl sm:shadow-orange-950/20 my-1 sm:my-2 flex flex-col justify-between overflow-hidden relative border border-gray-100 bg-white backdrop-blur-md animate-fade-in">
         {/* Realistic Mobile Status Bar matching screenshot */}
-        {isDeviceFrame && (
-          <div className="flex items-center justify-between px-6 pt-3 pb-1 text-gray-800 select-none z-50 bg-white">
-            <span className="text-xs font-bold tracking-tight">9:46</span>
-            
-            {/* Front Camera Punch-hole */}
-            <div className="w-4 h-4 bg-black rounded-full flex items-center justify-center -ml-1">
-              <div className="w-1.5 h-1.5 bg-gray-900 rounded-full" />
-            </div>
-
-            <div className="flex items-center gap-1.5 text-gray-800">
-              <Signal className="w-3 h-3" />
-              <Wifi className="w-3.5 h-3.5" />
-              <BatteryMedium className="w-4 h-4" />
-            </div>
+        <div className="flex items-center justify-between px-6 pt-3 pb-1 text-gray-800 select-none z-50 bg-white">
+          <span className="text-xs font-bold tracking-tight">9:46</span>
+          
+          {/* Front Camera Punch-hole */}
+          <div className="w-4 h-4 bg-black rounded-full flex items-center justify-center -ml-1">
+            <div className="w-1.5 h-1.5 bg-gray-900 rounded-full" />
           </div>
-        )}
+
+          <div className="flex items-center gap-1.5 text-gray-800">
+            <Signal className="w-3 h-3" />
+            <Wifi className="w-3.5 h-3.5" />
+            <BatteryMedium className="w-4 h-4" />
+          </div>
+        </div>
 
         {/* View Switch: Welcome Screen vs Questionnaire Flow */}
         {!isStarted ? (
-          <div className="flex-1 flex flex-col justify-between overflow-hidden">
+          <div className="flex-1 min-h-0 flex flex-col justify-between overflow-hidden">
             <WelcomePage
               onStart={() => {
                 setIsStarted(true);
@@ -510,40 +457,38 @@ Motto: "${formData.personalBio}"`;
             />
 
             {/* Bottom Android Navigation Bar (matching reference image) */}
-            {isDeviceFrame && (
-              <div className="bg-black text-white/70 py-2 px-12 flex items-center justify-between select-none">
-                <button
-                  type="button"
-                  onClick={() => {}}
-                  className="p-1 hover:text-white transition-colors"
-                  title="Back"
-                >
-                  <div className="w-0 h-0 border-y-[6px] border-y-transparent border-r-[10px] border-r-white/80" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsStarted(false)}
-                  className="p-1 hover:text-white transition-colors"
-                  title="Home"
-                >
-                  <div className="w-3.5 h-3.5 rounded-full border-2 border-white/80" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {}}
-                  className="p-1 hover:text-white transition-colors"
-                  title="Recent Apps"
-                >
-                  <div className="w-3.5 h-3.5 rounded-xs border-2 border-white/80" />
-                </button>
-              </div>
-            )}
+            <div className="bg-black text-white/70 py-2 px-12 flex items-center justify-between select-none">
+              <button
+                type="button"
+                onClick={() => {}}
+                className="p-1 hover:text-white transition-colors"
+                title="Back"
+              >
+                <div className="w-0 h-0 border-y-[6px] border-y-transparent border-r-[10px] border-r-white/80" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsStarted(false)}
+                className="p-1 hover:text-white transition-colors"
+                title="Home"
+              >
+                <div className="w-3.5 h-3.5 rounded-full border-2 border-white/80" />
+              </button>
+              <button
+                type="button"
+                onClick={() => {}}
+                className="p-1 hover:text-white transition-colors"
+                title="Recent Apps"
+              >
+                <div className="w-3.5 h-3.5 rounded-xs border-2 border-white/80" />
+              </button>
+            </div>
           </div>
         ) : (
-          <div className="flex-1 flex flex-col justify-between overflow-hidden relative">
+          <div className="flex-1 min-h-0 flex flex-col justify-between overflow-hidden relative">
             {/* Top Navigation Header for Questionnaire */}
             <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-orange-100/80">
-              <div className="px-4 py-3 flex items-center justify-between relative">
+              <div className="px-4 py-2.5 flex items-center justify-between relative">
                 <button
                   type="button"
                   onClick={handleBack}
@@ -575,10 +520,10 @@ Motto: "${formData.personalBio}"`;
               </div>
             )}
 
-            {/* Scrollable Form Content Area */}
+            {/* Scrollable Form Content Area with custom scrollbar */}
             <main
               id="step-scroll-area"
-              className="flex-1 px-4 sm:px-5 py-5 pb-32 overflow-y-auto no-scrollbar scroll-smooth"
+              className="flex-1 min-h-0 px-4 sm:px-5 py-4 pb-28 overflow-y-auto custom-scrollbar scroll-smooth"
             >
               {currentStep === 1 && <Step1 data={formData} updateData={updateData} />}
               {currentStep === 2 && <Step2 data={formData} updateData={updateData} />}
@@ -598,12 +543,12 @@ Motto: "${formData.personalBio}"`;
             </main>
 
             {/* Fixed Bottom Navigation Floating Dock */}
-            <div className="absolute bottom-0 left-0 right-0 w-full bg-gradient-to-t from-white via-white/95 to-white/0 p-4 pt-6 pb-4 sm:pb-6 z-40 border-t border-orange-100/50">
+            <div className="w-full bg-white/95 backdrop-blur-md p-3 sm:p-3.5 z-40 border-t border-orange-100 shadow-md">
               <div className="flex gap-2.5 items-center">
                 <Button
                   variant="secondary"
                   onClick={handleBack}
-                  className="w-12 h-12 flex items-center justify-center !px-0 rounded-2xl"
+                  className="w-12 h-11 flex items-center justify-center !px-0 rounded-2xl"
                   title="Kembali"
                 >
                   <ChevronLeft className="w-5 h-5 text-gray-700" />
@@ -611,7 +556,7 @@ Motto: "${formData.personalBio}"`;
 
                 <Button
                   fullWidth
-                  className="flex-1 h-12 flex items-center justify-center gap-2 shadow-lg shadow-primary-500/25"
+                  className="flex-1 h-11 flex items-center justify-center gap-2 shadow-lg shadow-primary-500/25"
                   onClick={handleNext}
                 >
                   <span className="font-bold text-sm">
@@ -620,13 +565,38 @@ Motto: "${formData.personalBio}"`;
                   {currentStep !== totalSteps && <ChevronRight className="w-4 h-4 opacity-90" />}
                 </Button>
               </div>
+            </div>
 
-              {/* Bottom Android Bar if in device frame */}
-              {isDeviceFrame && (
-                <div className="hidden sm:flex justify-center mt-3 -mb-1">
-                  <div className="w-28 h-1 bg-gray-300 rounded-full" />
-                </div>
-              )}
+            {/* Bottom Android Navigation Bar (matching Welcome and Completed) */}
+            <div className="bg-black text-white/70 py-2 px-12 flex items-center justify-between select-none">
+              <button
+                type="button"
+                onClick={handleBack}
+                className="p-1 hover:text-white transition-colors"
+                title="Back"
+              >
+                <div className="w-0 h-0 border-y-[6px] border-y-transparent border-r-[10px] border-r-white/80" />
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setFormData(INITIAL_PROFILE);
+                  setCurrentStep(1);
+                  setIsStarted(false);
+                }}
+                className="p-1 hover:text-white transition-colors"
+                title="Home"
+              >
+                <div className="w-3.5 h-3.5 rounded-full border-2 border-white/80" />
+              </button>
+              <button
+                type="button"
+                onClick={() => {}}
+                className="p-1 hover:text-white transition-colors"
+                title="Recent Apps"
+              >
+                <div className="w-3.5 h-3.5 rounded-xs border-2 border-white/80" />
+              </button>
             </div>
           </div>
         )}
