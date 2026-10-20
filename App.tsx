@@ -6,7 +6,6 @@ import { Step2 } from './components/steps/Step2';
 import { StepVisa } from './components/steps/StepVisa';
 import { Step3 } from './components/steps/Step3';
 import { Step4 } from './components/steps/Step4';
-import { BadgeCard } from './components/ui/BadgeCard';
 import { Button } from './components/ui/Button';
 import {
   ChevronLeft,
@@ -22,8 +21,10 @@ import {
   Zap,
   Wifi,
   BatteryMedium,
-  Signal
+  Signal,
+  X
 } from 'lucide-react';
+import tourLeaderSuccessImg from './src/assets/images/tour_leader_success_1792465141256.jpg';
 
 const SAMPLE_PROFILING_DATA: TourLeaderProfile = {
   fullName: 'Arif Wibisono, S.Par',
@@ -215,111 +216,201 @@ Motto: "${formData.personalBio}"`;
   // View when profiling completed
   if (isCompleted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-100/60 via-amber-50/40 to-orange-50 font-sans flex items-center justify-center p-4 sm:p-6 select-none relative overflow-hidden">
-        {/* Ambient glows */}
-        <div className="fixed -top-20 -left-20 w-96 h-96 bg-primary-400/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="fixed -bottom-20 -right-20 w-96 h-96 bg-orange-500/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="min-h-screen bg-gradient-to-br from-orange-100/50 via-[#FAF7F2] to-amber-50/60 font-sans flex flex-col items-center justify-start p-2 sm:p-6 relative select-none selection:bg-primary-100 selection:text-primary-900">
+        {/* Decorative Warm Ambient Elements */}
+        <div className="fixed top-[-10%] left-[-10%] w-[550px] h-[550px] bg-primary-200/25 rounded-full blur-[120px] pointer-events-none" />
+        <div className="fixed bottom-[-10%] right-[-10%] w-[550px] h-[550px] bg-orange-300/20 rounded-full blur-[120px] pointer-events-none" />
 
-        <div className="max-w-md w-full bg-white/95 rounded-[2.5rem] p-6 sm:p-8 shadow-2xl shadow-orange-950/10 text-center animate-fade-in border border-orange-100/80 backdrop-blur-md relative z-10">
-          {/* Badge Icon */}
-          <div className="relative inline-block mx-auto mb-4">
-            <div className="w-20 h-20 bg-gradient-to-tr from-primary-500 to-amber-500 rounded-3xl flex items-center justify-center shadow-lg shadow-primary-500/30 text-white animate-bounce-short">
-              <CheckCircle2 className="w-10 h-10" />
+        {/* Top Utility Bar (Consistent with Mobile App Header) */}
+        <header className="w-full max-w-[390px] mb-2 flex items-center justify-between px-2 sm:px-1 z-20">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-primary-500 to-amber-500 flex items-center justify-center text-white shadow-md shadow-primary-500/20">
+              <Compass className="w-4 h-4" />
             </div>
-            <div className="absolute -top-1 -right-1 bg-white text-amber-500 p-1.5 rounded-full shadow-md">
-              <Sparkles className="w-4 h-4" />
+            <div>
+              <span className="text-[10px] uppercase tracking-widest font-black text-primary-600 block leading-none">
+                PANORAMA JTB
+              </span>
+              <span className="text-xs font-bold text-gray-800 leading-tight">
+                Tour Leader Profiling
+              </span>
             </div>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight mb-1">
-            Profil Berhasil Disimpan!
-          </h2>
-          <p className="text-gray-500 text-xs sm:text-sm mb-6 leading-relaxed">
-            Data profiling Anda telah tercatat dalam sistem Tour Leader Panorama. Berikut adalah pratinjau ID Badge resmi Anda.
-          </p>
+          <button
+            type="button"
+            onClick={() => {
+              setFormData(INITIAL_PROFILE);
+              setCurrentStep(1);
+              setIsCompleted(false);
+              setIsStarted(false);
+            }}
+            className="text-[11px] font-bold bg-white/90 hover:bg-gray-100 text-gray-700 border border-gray-200 px-3 py-1.5 rounded-xl transition-all flex items-center gap-1 shadow-2xs active:scale-95"
+            title="Tutup dan kembali ke halaman awal"
+          >
+            <X className="w-3.5 h-3.5 text-gray-600" />
+            <span>Close</span>
+          </button>
+        </header>
 
-          {/* Render Digital Badge Card */}
-          <div className="mb-4 text-left">
-            <BadgeCard profile={formData} />
+        {/* Mobile Smartphone Frame Container */}
+        <div className="w-full max-w-[390px] bg-white sm:rounded-[3rem] sm:border-[8px] sm:border-gray-900 sm:shadow-2xl sm:shadow-orange-950/20 my-1 min-h-[780px] sm:min-h-[820px] flex flex-col justify-between overflow-hidden relative border border-gray-100 backdrop-blur-md animate-fade-in">
+          {/* Realistic Mobile Status Bar */}
+          <div className="flex items-center justify-between px-6 pt-3 pb-1 text-gray-800 select-none z-50 bg-white">
+            <span className="text-xs font-bold tracking-tight">9:46</span>
+            
+            {/* Front Camera Punch-hole */}
+            <div className="w-4 h-4 bg-black rounded-full flex items-center justify-center -ml-1">
+              <div className="w-1.5 h-1.5 bg-gray-900 rounded-full" />
+            </div>
+
+            <div className="flex items-center gap-1.5 text-gray-800">
+              <Signal className="w-3 h-3" />
+              <Wifi className="w-3.5 h-3.5" />
+              <BatteryMedium className="w-4 h-4" />
+            </div>
           </div>
 
-          {/* Uploaded Documents Notification Box */}
-          {formData.documents && formData.documents.length > 0 && (
-            <div className="mb-6 p-3 bg-orange-50/80 rounded-2xl border border-orange-200/80 text-left text-xs">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="font-bold text-gray-800 flex items-center gap-1.5 text-[11px] uppercase tracking-wider">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                  Dokumen Legalitas & Visa ({formData.documents.length})
-                </span>
-                <span className="text-[10px] font-bold text-primary-700 bg-white px-2 py-0.5 rounded-full border border-orange-200">
-                  Tersimpan
-                </span>
-              </div>
-              <div className="space-y-1">
-                {formData.documents.map((d) => (
-                  <div key={d.id} className="flex items-center gap-1.5 text-[11px] text-gray-600 truncate">
-                    <span className="font-bold text-red-600 bg-red-100/80 px-1 py-0.2 rounded text-[9px]">
-                      {d.type.includes('pdf') || d.name.endsWith('.pdf') ? 'PDF' : 'FILE'}
-                    </span>
-                    <span className="font-medium truncate">{d.name}</span>
-                    <span className="text-gray-400">({d.category})</span>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-2 pt-2 border-t border-orange-200/60 text-[10px] text-amber-900 flex items-start gap-1.5 bg-amber-100/60 p-2 rounded-xl leading-relaxed">
-                <span className="font-bold flex-shrink-0">Disclaimer:</span>
-                <span>Dokumen bersifat rawan dan kami tidak bertanggung jawab jika terjadi sesuatu dengan berkas dokumen tersebut.</span>
-              </div>
+          {/* Top In-App Header */}
+          <div className="px-4 py-2.5 flex items-center justify-between border-b border-orange-100/70 bg-white/95">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-xs font-bold text-gray-800">Status Profiling</span>
             </div>
-          )}
-
-          {/* Action Buttons */}
-          <div className="space-y-3">
-            <Button
-              fullWidth
-              onClick={copyProfileSummary}
-              className="flex items-center justify-center gap-2"
+            <button
+              type="button"
+              onClick={() => {
+                setFormData(INITIAL_PROFILE);
+                setCurrentStep(1);
+                setIsCompleted(false);
+                setIsStarted(false);
+              }}
+              className="text-xs font-bold text-gray-500 hover:text-red-600 flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-gray-100 transition-colors"
+              title="Close"
             >
-              {copiedNotification ? (
-                <>
-                  <Check className="w-4 h-4" />
-                  Ringkasan Tersalin ke Clipboard!
-                </>
-              ) : (
-                <>
-                  <Copy className="w-4 h-4" />
-                  Salin Ringkasan Profil
-                </>
-              )}
-            </Button>
+              <X className="w-4 h-4" />
+            </button>
+          </div>
 
+          {/* Scrollable Screen Content */}
+          <div className="flex-1 overflow-y-auto px-5 py-3 text-center">
+            {/* Supportive Image Replacing Copy Button */}
+            <div className="relative mx-auto my-2 w-48 h-48 sm:w-52 sm:h-52 rounded-2xl overflow-hidden shadow-md shadow-orange-900/10 border-2 border-orange-200 bg-orange-50/60 flex items-center justify-center group">
+              <img
+                src={tourLeaderSuccessImg}
+                alt="Tour Leader Siap Bertugas"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute top-2 right-2 bg-emerald-500 text-white p-1 rounded-full shadow-md">
+                <CheckCircle2 className="w-4 h-4" />
+              </div>
+            </div>
+
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-bold mb-2">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+              Tersimpan di Sistem Panorama
+            </div>
+
+            <h2 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight mb-1">
+              Profil Berhasil Disimpan!
+            </h2>
+            <p className="text-gray-500 text-xs mb-4 leading-relaxed">
+              Data profiling Anda telah berhasil tercatat dalam sistem Tour Leader Panorama. Terima kasih atas kelengkapan informasi yang telah Anda berikan.
+            </p>
+
+            {/* Uploaded Documents Notification Box */}
+            {formData.documents && formData.documents.length > 0 && (
+              <div className="mb-4 p-3 bg-orange-50/80 rounded-2xl border border-orange-200/80 text-left text-xs">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="font-bold text-gray-800 flex items-center gap-1.5 text-[11px] uppercase tracking-wider">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                    Dokumen Legalitas & Visa ({formData.documents.length})
+                  </span>
+                  <span className="text-[10px] font-bold text-primary-700 bg-white px-2 py-0.5 rounded-full border border-orange-200">
+                    Tersimpan
+                  </span>
+                </div>
+                <div className="space-y-1">
+                  {formData.documents.map((d) => (
+                    <div key={d.id} className="flex items-center gap-1.5 text-[11px] text-gray-600 truncate">
+                      <span className="font-bold text-red-600 bg-red-100/80 px-1 py-0.2 rounded text-[9px]">
+                        {d.type.includes('pdf') || d.name.endsWith('.pdf') ? 'PDF' : 'FILE'}
+                      </span>
+                      <span className="font-medium truncate">{d.name}</span>
+                      <span className="text-gray-400">({d.category})</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-2 pt-2 border-t border-orange-200/60 text-[10px] text-amber-900 flex items-start gap-1.5 bg-amber-100/60 p-2 rounded-xl leading-relaxed">
+                  <span className="font-bold flex-shrink-0">Disclaimer:</span>
+                  <span>Dokumen bersifat rawan dan kami tidak bertanggung jawab jika terjadi sesuatu dengan berkas dokumen tersebut.</span>
+                </div>
+              </div>
+            )}
+
+            <p className="text-[10.5px] text-gray-400 mt-2 mb-2">
+              Data diri diambil secara otomatis dari Menu Profil Anda. Tim Operasional akan memvalidasi dokumen untuk penugasan trip.
+            </p>
+          </div>
+
+          {/* Bottom Action Footer with Edit Data and Close Buttons */}
+          <div className="p-4 bg-white border-t border-orange-100">
             <div className="grid grid-cols-2 gap-2.5">
               <Button
                 variant="secondary"
                 onClick={() => setIsCompleted(false)}
-                className="flex items-center justify-center gap-1.5 text-xs sm:text-sm py-3"
+                className="flex items-center justify-center gap-1.5 text-xs sm:text-sm py-3 font-bold"
               >
                 <ChevronLeft className="w-4 h-4" /> Edit Data
               </Button>
 
               <Button
-                variant="outline"
+                variant="primary"
                 onClick={() => {
                   setFormData(INITIAL_PROFILE);
                   setCurrentStep(1);
                   setIsCompleted(false);
                   setIsStarted(false);
                 }}
-                className="flex items-center justify-center gap-1.5 text-xs sm:text-sm py-3"
+                className="flex items-center justify-center gap-1.5 text-xs sm:text-sm py-3 font-bold shadow-md shadow-primary-500/20"
               >
-                <RotateCcw className="w-3.5 h-3.5" /> Profil Baru
+                <X className="w-4 h-4" /> Close
               </Button>
             </div>
           </div>
 
-          <p className="text-[11px] text-gray-400 mt-5">
-            Data diri diambil secara otomatis dari Menu Profil Anda. Tim Operasional akan memvalidasi dokumen untuk penugasan trip.
-          </p>
+          {/* Bottom Android Navigation Bar */}
+          <div className="bg-black text-white/70 py-2 px-12 flex items-center justify-between select-none">
+            <button
+              type="button"
+              onClick={() => setIsCompleted(false)}
+              className="p-1 hover:text-white transition-colors"
+              title="Back"
+            >
+              <div className="w-0 h-0 border-y-[6px] border-y-transparent border-r-[10px] border-r-white/80" />
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setFormData(INITIAL_PROFILE);
+                setCurrentStep(1);
+                setIsCompleted(false);
+                setIsStarted(false);
+              }}
+              className="p-1 hover:text-white transition-colors"
+              title="Close to Home"
+            >
+              <div className="w-3.5 h-3.5 rounded-full border-2 border-white/80" />
+            </button>
+            <button
+              type="button"
+              onClick={() => {}}
+              className="p-1 hover:text-white transition-colors"
+              title="Recent Apps"
+            >
+              <div className="w-3.5 h-3.5 rounded-xs border-2 border-white/80" />
+            </button>
+          </div>
         </div>
       </div>
     );

@@ -2,8 +2,7 @@ import React from 'react';
 import { TourLeaderProfile } from '../../types';
 import { RadioInput, Option } from '../ui/RadioInput';
 import { Input } from '../ui/Input';
-import { BadgeCard } from '../ui/BadgeCard';
-import { PhoneCall, Eye, FileCheck2, FileText, ShieldAlert } from 'lucide-react';
+import { PhoneCall, FileCheck2, FileText, ShieldAlert } from 'lucide-react';
 
 interface Props {
   data: TourLeaderProfile;
@@ -161,19 +160,6 @@ export const Step4: React.FC<Props> = ({ data, updateData }) => {
         )}
       </div>
 
-      {/* Live Badge Preview Card */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between px-1">
-          <span className="text-xs font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5">
-            <Eye className="w-3.5 h-3.5 text-primary-500" />
-            Live Preview Kartu Profil Digital Anda
-          </span>
-          <span className="text-[11px] font-semibold text-primary-600 bg-primary-50 px-2 py-0.5 rounded">
-            Otomatis Terbentuk
-          </span>
-        </div>
-        <BadgeCard profile={data} />
-      </div>
 
       {/* Consent Checkbox */}
       <div className="bg-orange-50/70 p-4 rounded-2xl border border-orange-200/80">
