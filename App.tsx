@@ -30,15 +30,16 @@ const SAMPLE_PROFILING_DATA: TourLeaderProfile = {
   email: 'arif.wibisono@panoramatours.id',
   city: 'Jabodetabek',
   cityOther: '',
+  domicile: 'Jabodetabek',
+  domicileOther: '',
+  religion: 'Islam',
   uniformSize: 'L',
   instagram: '@arif.adventure',
   avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80',
 
-  yearsExperience: '3 - 5 Tahun',
-  totalTripsCount: '26 - 50 Trip',
   domesticDestinations: ['Bali & Nusa Penida', 'Labuan Bajo & Komodo', 'Yogyakarta, Solo & Semarang', 'Bromo, Malang & Ijen'],
   internationalDestinations: ['Asia Timur (Jepang & Korea)', 'Asia Tenggara (SG, MY, TH, VN)', 'Eropa Barat & Tengah'],
-  preferredGroupType: ['Corporate Gathering & MICE', 'Incentive VIP & Luxury Travelers', 'Keluarga & Lansia'],
+  preferredGroupType: ['Corporate Gathering & MICE', 'VIP', 'Keluarga (Family Tour)', 'Usia Produktif (Liburan Musim Cuti)'],
 
   bnspStatus: 'Bersertifikat Resmi BNSP',
   bnspNumber: 'REG.PAR.042.00192.2024',
@@ -71,7 +72,6 @@ const SAMPLE_PROFILING_DATA: TourLeaderProfile = {
     { language: 'Bahasa Inggris', level: 'Fasih (Fluent)' },
     { language: 'Bahasa Jepang', level: 'Menengah' }
   ],
-  guidingStyle: 'Energetik & Humoris',
   specialSkills: ['Fotografi & Video Reels', 'Ice Breaking & MC', 'P3K & Medis Lapangan', 'Kuliner & Street Food'],
   personalBio: 'Berkomitmen menyajikan pengalaman liburan yang aman, penuh kehangatan, dokumentasi estetik, dan kenangan tak terlupakan bagi setiap tamu.',
 
@@ -108,8 +108,12 @@ function App() {
   const validateStep = (step: number): { valid: boolean; error?: string } => {
     switch (step) {
       case 1:
-        if (!formData.yearsExperience) return { valid: false, error: 'Mohon pilih Lama Pengalaman memandu tur.' };
-        if (!formData.totalTripsCount) return { valid: false, error: 'Mohon pilih Estimasi Jumlah Trip yang pernah dipandu.' };
+        if (!formData.domicile && !formData.city) {
+          return { valid: false, error: 'Mohon tentukan Kota Domisili tempat tinggal Anda.' };
+        }
+        if (!formData.religion) {
+          return { valid: false, error: 'Mohon pilih Agama Anda untuk penyesuaian penugasan.' };
+        }
         if (!formData.domesticDestinations || formData.domesticDestinations.length === 0) {
           return { valid: false, error: 'Pilih minimal satu Destinasi Domestik yang Anda kuasai.' };
         }
@@ -130,7 +134,6 @@ function App() {
 
       case 4:
         if (!formData.languages || formData.languages.length === 0) return { valid: false, error: 'Cantumkan minimal satu kemampuan bahasa.' };
-        if (!formData.guidingStyle) return { valid: false, error: 'Pilih Gaya Memandu utama Anda.' };
         if (!formData.personalBio.trim()) return { valid: false, error: 'Tuliskan Bio / Motto Pelayanan singkat Anda.' };
         return { valid: true };
 
@@ -280,9 +283,19 @@ function App() {
             <h2 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight mb-1">
               Profil Berhasil Disimpan!
             </h2>
-            <p className="text-gray-500 text-xs mb-4 leading-relaxed">
+            <p className="text-gray-500 text-xs mb-2 leading-relaxed">
               Data profiling Anda telah berhasil tercatat dalam sistem Tour Leader Panorama. Terima kasih atas kelengkapan informasi yang telah Anda berikan.
             </p>
+
+            {/* Quick Profile Summary Badges */}
+            <div className="flex items-center justify-center gap-2 mb-3.5 flex-wrap">
+              <span className="px-2.5 py-1 rounded-full bg-orange-100/90 text-primary-800 text-[10.5px] font-bold">
+                📍 Domisili: {formData.domicile || formData.city || 'Jabodetabek'}
+              </span>
+              <span className="px-2.5 py-1 rounded-full bg-amber-100/90 text-amber-900 text-[10.5px] font-bold">
+                🙏 Agama: {formData.religion || 'Islam'}
+              </span>
+            </div>
 
             {/* Uploaded Documents Notification Box */}
             {formData.documents && formData.documents.length > 0 && (

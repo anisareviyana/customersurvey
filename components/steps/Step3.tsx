@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { TourLeaderProfile, LanguageSkill } from '../../types';
-import { RadioInput, Option } from '../ui/RadioInput';
 import { ChipSelect } from '../ui/ChipSelect';
 import { Textarea } from '../ui/Input';
-import { Globe, Plus, Trash2 } from 'lucide-react';
+import { Globe, Plus, Trash2, Sparkles, BookOpen } from 'lucide-react';
 
 interface Props {
   data: TourLeaderProfile;
@@ -24,41 +23,12 @@ const COMMON_LANGUAGES = [
 export const Step3: React.FC<Props> = ({ data, updateData }) => {
   const [newLang, setNewLang] = useState('');
 
-  const guidingStyleOptions: Option[] = [
-    {
-      label: 'Energetik & Humoris (Mood Maker)',
-      value: 'Energetik & Humoris',
-      subtitle: 'Membuat suasana bus & rombongan selalu ceria dan penuh tawa',
-      badge: 'Populer'
-    },
-    {
-      label: 'Kalem, Informatif & Kaya Wawasan',
-      value: 'Kalem & Berwawasan',
-      subtitle: 'Penceritaan sejarah, etika lokal, dan penjelasan destinasi mendalam'
-    },
-    {
-      label: 'Perhatian, Ramah & Sabar (Family Caretaker)',
-      value: 'Perhatian & Sabar',
-      subtitle: 'Sangat telaten merawat kebutuhan anak-anak, lansia & rombongan keluarga'
-    },
-    {
-      label: 'Sigap, Taktis & Problem Solver',
-      value: 'Sigap & Problem Solver',
-      subtitle: 'Cepat mengambil keputusan saat kendala lapangan, delay pesawat, atau cuaca'
-    },
-    {
-      label: 'Terstruktur & Rapi (Timekeeper Presisi)',
-      value: 'Terstruktur & Presisi',
-      subtitle: 'Disiplin rundown waktu, alur tiket, dan efisiensi rute perjalanan'
-    }
-  ];
-
   const skillOptions = [
     { label: 'Mobile Photography & Reels Creator', value: 'Fotografi & Video Reels', subtitle: 'Bisa foto estetik untuk tamu & konten medsos' },
-    { label: 'Ice Breaking, Games & MC Rombongan', value: 'Ice Breaking & MC', subtitle: 'Ahli menghidupkan perjalanan panjang di bus' },
+    { label: 'Ice Breaking, Games & MC Rombongan', value: 'Ice Breaking & MC', subtitle: 'Ahli menghidupkan suasana perjalanan di bus' },
     { label: 'First Aid & Tanggap Medis Darurat', value: 'P3K & Medis Lapangan', subtitle: 'Pertolongan pertama mabuk darat, luka, atau fainting' },
     { label: 'Rekomendasi Kuliner Otentik & Oleh-oleh', value: 'Kuliner & Street Food', subtitle: 'Paham tempat makan halal, enak, dan hemat' },
-    { label: 'Negosiasi Vendor & Handling Komplain', value: 'Negosiasi & Crisis Handling', subtitle: 'Penyelesaian damai masalah hotel/transport' },
+    { label: 'Negosiasi Vendor & Handling Komplain', value: 'Negosiasi & Crisis Handling', subtitle: 'Penyelesaian damai kendala hotel/transportasi' },
   ];
 
   const updateLanguageLevel = (index: number, level: LanguageSkill['level']) => {
@@ -89,9 +59,9 @@ export const Step3: React.FC<Props> = ({ data, updateData }) => {
           <span className="w-2 h-2 rounded-full bg-primary-500" />
           <span className="text-[11px] font-bold text-primary-700 uppercase tracking-wider">Step 4 dari 5</span>
         </div>
-        <h2 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Bahasa & Gaya Memandu</h2>
+        <h2 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Bahasa & Keahlian Khusus</h2>
         <p className="text-gray-500 text-xs sm:text-sm mt-0.5">
-          Tunjukkan keahlian komunikasi, bahasa, serta kepribadian unik Anda di depan tamu.
+          Tunjukkan keahlian komunikasi bahasa asing serta soft skills nilai tambah Anda saat memandu rombongan tur.
         </p>
       </div>
 
@@ -164,20 +134,11 @@ export const Step3: React.FC<Props> = ({ data, updateData }) => {
         </div>
       </div>
 
-      {/* Guiding Style */}
-      <RadioInput
-        label="Gaya Memandu / Guiding Persona Utama"
-        options={guidingStyleOptions}
-        value={data.guidingStyle}
-        onChange={(val) => updateData({ guidingStyle: val })}
-        required
-      />
-
       {/* Special Skills */}
       <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-200/80 shadow-xs">
         <ChipSelect
           label="Keahlian Tambahan / Soft Skills Nilai Tambah"
-          helperText="Nilai lebih yang membuat pengalaman tamu semakin berkesan."
+          helperText="Nilai lebih yang membuat pengalaman tamu semakin nyaman dan berkesan."
           options={skillOptions}
           selectedValues={data.specialSkills}
           onChange={(vals) => updateData({ specialSkills: vals })}
@@ -189,7 +150,7 @@ export const Step3: React.FC<Props> = ({ data, updateData }) => {
         <Textarea
           label="Motto Pelayanan / Bio Singkat Tour Leader"
           placeholder="e.g. Menghadirkan keceriaan, kenyamanan, dan keselamatan tamu adalah prioritas utama saya di setiap perjalanan."
-          helperText="Tuliskan 1-3 kalimat yang menggambarkan dedikasi Anda."
+          helperText="Tuliskan 1-3 kalimat yang menggambarkan dedikasi pelayanan Anda."
           value={data.personalBio}
           onChange={(e) => updateData({ personalBio: e.target.value })}
           rows={3}

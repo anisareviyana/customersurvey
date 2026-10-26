@@ -2,7 +2,8 @@ import React from 'react';
 import { TourLeaderProfile } from '../../types';
 import { RadioInput, Option } from '../ui/RadioInput';
 import { ChipSelect } from '../ui/ChipSelect';
-import { Compass, Plane, Users, CheckCircle } from 'lucide-react';
+import { Input } from '../ui/Input';
+import { Compass, Plane, Users, MapPin, Heart } from 'lucide-react';
 
 interface Props {
   data: TourLeaderProfile;
@@ -10,18 +11,27 @@ interface Props {
 }
 
 export const Step1: React.FC<Props> = ({ data, updateData }) => {
-  const yearsOptions: Option[] = [
-    { label: '< 1 Tahun', value: '< 1 Tahun', subtitle: 'Fresh Leader / Junior' },
-    { label: '1 - 3 Tahun', value: '1 - 3 Tahun', subtitle: 'Intermediate Leader' },
-    { label: '3 - 5 Tahun', value: '3 - 5 Tahun', subtitle: 'Experienced Leader' },
-    { label: '> 5 Tahun', value: '> 5 Tahun', subtitle: 'Senior / Veteran Leader', badge: 'Expert' },
+  const domicileOptions: Option[] = [
+    { label: 'Jabodetabek (Jakarta, Bogor, Depok, Tangerang, Bekasi)', value: 'Jabodetabek' },
+    { label: 'Bandung & Jawa Barat', value: 'Bandung & Jawa Barat' },
+    { label: 'Surabaya & Jawa Timur', value: 'Surabaya & Jawa Timur' },
+    { label: 'Semarang, Solo & D.I. Yogyakarta', value: 'Semarang, Solo & D.I. Yogyakarta' },
+    { label: 'Bali & Nusa Tenggara', value: 'Bali & Nusa Tenggara' },
+    { label: 'Medan & Sumatera Utara', value: 'Medan & Sumatera Utara' },
+    { label: 'Batam & Kepulauan Riau', value: 'Batam & Kepulauan Riau' },
+    { label: 'Makassar & Sulawesi Selatan', value: 'Makassar & Sulawesi Selatan' },
+    { label: 'Balikpapan & Kalimantan Timur', value: 'Balikpapan & Kalimantan Timur' },
+    { label: 'Kota / Daerah Lainnya', value: 'Lainnya' },
   ];
 
-  const tripsOptions: Option[] = [
-    { label: '< 10 Trip', value: '< 10 Trip' },
-    { label: '10 - 25 Trip', value: '10 - 25 Trip' },
-    { label: '26 - 50 Trip', value: '26 - 50 Trip' },
-    { label: '> 50 Trip', value: '> 50 Trip', badge: 'High Flying' },
+  const religionOptions: Option[] = [
+    { label: 'Islam', value: 'Islam' },
+    { label: 'Kristen Protestan', value: 'Kristen Protestan' },
+    { label: 'Katolik', value: 'Katolik' },
+    { label: 'Hindu', value: 'Hindu' },
+    { label: 'Buddha', value: 'Buddha' },
+    { label: 'Konghucu', value: 'Konghucu' },
+    { label: 'Lainnya', value: 'Lainnya' },
   ];
 
   const domesticOptions = [
@@ -45,14 +55,25 @@ export const Step1: React.FC<Props> = ({ data, updateData }) => {
     { label: 'China & Taiwan', value: 'China & Taiwan', subtitle: 'Ancient Heritage & Modern Metros' },
   ];
 
+  // Updated group type options matching team feedback:
+  // - Keluarga & Lansia dipisah
+  // - Incentive VIP -> cukup VIP aja
+  // - Gen Z & Adventure dipisah
+  // - Cukup Private Tour aja, gak perlu Honeymoon
+  // - Tambah Usia Produktif terkait liburan musim cuti
   const groupTypeOptions = [
-    { label: 'Keluarga & Lansia', value: 'Keluarga & Lansia', subtitle: 'Tempo santai & perhatian ekstra' },
-    { label: 'Corporate Gathering & MICE', value: 'Corporate Gathering & MICE', subtitle: 'Grup besar, schedule ketat & games' },
-    { label: 'Incentive VIP & Luxury Travelers', value: 'Incentive VIP & Luxury Travelers', subtitle: 'Layanan eksklusif bintang 5' },
-    { label: 'Anak Muda / Gen Z & Adventure', value: 'Anak Muda / Gen Z & Adventure', subtitle: 'Dinamis, konten foto & petualangan' },
-    { label: 'School & Study Tour', value: 'School & Study Tour', subtitle: 'Edukasi, ketertiban siswa & fun facts' },
-    { label: 'Private Tour & Honeymoon', value: 'Private Tour & Honeymoon', subtitle: 'Intim, fleksibel & momen spesial' },
+    { label: 'Keluarga (Family Tour)', value: 'Keluarga (Family Tour)', subtitle: 'Keluarga multi-generasi & ramah anak-anak' },
+    { label: 'Wisatawan Lansia / Senior', value: 'Wisatawan Lansia / Senior', subtitle: 'Tempo santai, perhatian ekstra & kenyamanan maksimal' },
+    { label: 'VIP', value: 'VIP', subtitle: 'Layanan eksklusif bintang 5, privasi & protokol khusus' },
+    { label: 'Gen Z & Anak Muda', value: 'Gen Z & Anak Muda', subtitle: 'Dinamis, spot tren viral & ramah konten medsos' },
+    { label: 'Adventure & Outdoor', value: 'Adventure & Outdoor', subtitle: 'Trekking, alam bebas & wisata petualangan aktif' },
+    { label: 'Private Tour', value: 'Private Tour', subtitle: 'Rombongan privat, fleksibel & custom itinerary' },
+    { label: 'Usia Produktif (Liburan Musim Cuti)', value: 'Usia Produktif (Liburan Musim Cuti)', subtitle: 'Karyawan & profesional yang berlibur saat musim cuti kerja' },
+    { label: 'Corporate Gathering & MICE', value: 'Corporate Gathering & MICE', subtitle: 'Grup korporat besar, company outing & MICE' },
+    { label: 'School & Study Tour', value: 'School & Study Tour', subtitle: 'Edukasi pelajar, kedisiplinan & edukasi budaya' },
   ];
+
+  const currentDomicile = data.domicile || data.city || '';
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -62,27 +83,82 @@ export const Step1: React.FC<Props> = ({ data, updateData }) => {
           <span className="w-2 h-2 rounded-full bg-primary-500" />
           <span className="text-[11px] font-bold text-primary-700 uppercase tracking-wider">Step 1 dari 5</span>
         </div>
-        <h2 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Pengalaman & Rute Destinasi</h2>
+        <h2 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Domisili & Preferensi Destinasi</h2>
         <p className="text-gray-500 text-xs sm:text-sm mt-0.5">
-          Tentukan jam terbang dan peta wilayah yang menjadi keahlian utama Anda.
+          Lengkapi data domisili, agama, serta peta wilayah dan karakter rombongan yang menjadi keahlian Anda.
         </p>
       </div>
 
-      {/* Years & Trips */}
-      <div className="space-y-4">
+      {/* Profil Diri Ringkas (Tersinkronisasi) */}
+      <div className="bg-orange-50/40 rounded-2xl p-3 sm:p-3.5 border border-orange-200/70 flex items-center justify-between gap-3 text-xs">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <img
+            src={data.avatarUrl}
+            alt={data.fullName}
+            className="w-10 h-10 rounded-full object-cover border-2 border-primary-500 flex-shrink-0"
+          />
+          <div className="min-w-0">
+            <div className="font-bold text-gray-900 truncate text-xs sm:text-sm">{data.fullName}</div>
+            <div className="text-[10px] text-gray-500 truncate">{data.phone} • {data.email}</div>
+          </div>
+        </div>
+        <span className="px-2 py-0.5 rounded-full bg-orange-100 text-primary-700 font-bold text-[9px] flex-shrink-0">
+          Akun Terhubung
+        </span>
+      </div>
+
+      {/* 1. Domisili Tempat Tinggal */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2">
+          <MapPin className="w-4 h-4 text-primary-600" />
+          <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+            Domisili (Kota Tempat Tinggal Saat Ini) <span className="text-primary-500">*</span>
+          </label>
+        </div>
+        <p className="text-[11px] text-gray-500">
+          Menentukan penugasan kota keberangkatan tur (home-base keberangkatan terdekat).
+        </p>
+
         <RadioInput
-          label="Lama Pengalaman Memimpin Tur"
-          options={yearsOptions}
-          value={data.yearsExperience}
-          onChange={val => updateData({ yearsExperience: val })}
+          options={domicileOptions}
+          value={currentDomicile}
+          onChange={(val) => {
+            updateData({ domicile: val, city: val });
+          }}
+          columns={1}
           required
         />
 
+        {currentDomicile === 'Lainnya' && (
+          <div className="pl-3 border-l-2 border-primary-500 pt-1 animate-fade-in">
+            <Input
+              label="Tuliskan Nama Kota / Kabupaten Domisili Anda"
+              placeholder="e.g. Cirebon, Purwokerto, Manado, dll."
+              value={data.domicileOther || data.cityOther || ''}
+              onChange={(e) => updateData({ domicileOther: e.target.value, cityOther: e.target.value })}
+              required
+            />
+          </div>
+        )}
+      </div>
+
+      {/* 2. Agama */}
+      <div className="space-y-2 pt-1">
+        <div className="flex items-center gap-2">
+          <Heart className="w-4 h-4 text-primary-600" />
+          <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+            Agama <span className="text-primary-500">*</span>
+          </label>
+        </div>
+        <p className="text-[11px] text-gray-500">
+          Informasi ini digunakan untuk penyesuaian penugasan tur khusus (misal: Umrah Plus, Holyland, preferensi makanan, serta ketersediaan waktu ibadah di perjalanan).
+        </p>
+
         <RadioInput
-          label="Estimasi Total Rombongan / Trip yang Pernah Dipandu"
-          options={tripsOptions}
-          value={data.totalTripsCount}
-          onChange={val => updateData({ totalTripsCount: val })}
+          options={religionOptions}
+          value={data.religion}
+          onChange={(val) => updateData({ religion: val })}
+          columns={2}
           required
         />
       </div>

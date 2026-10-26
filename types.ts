@@ -23,7 +23,7 @@ export interface DocumentAttachment {
 }
 
 export interface TourLeaderProfile {
-  // Step 1: Informasi Diri & Identitas
+  // Informasi Diri, Domisili & Agama
   fullName: string;
   nickname: string;
   gender: 'Pria' | 'Wanita' | '';
@@ -31,18 +31,19 @@ export interface TourLeaderProfile {
   email: string;
   city: string;
   cityOther?: string;
+  domicile: string;
+  domicileOther?: string;
+  religion: string;
   uniformSize: 'S' | 'M' | 'L' | 'XL' | 'XXL' | '';
   instagram: string;
   avatarUrl: string;
 
-  // Step 2: Jam Terbang & Spesialisasi Destinasi
-  yearsExperience: string;
-  totalTripsCount: string;
+  // Step 1: Spesialisasi Destinasi & Tipe Wisatawan
   domesticDestinations: string[];
   internationalDestinations: string[];
   preferredGroupType: string[];
 
-  // Step 3: Sertifikasi & Legalitas
+  // Step 2: Sertifikasi & Legalitas
   bnspStatus: string;
   bnspNumber?: string;
   passportStatus: string;
@@ -51,13 +52,12 @@ export interface TourLeaderProfile {
   firstAidCertified: string;
   documents: DocumentAttachment[];
 
-  // Step 4: Kemampuan Bahasa, Karakter & Keahlian
+  // Step 3 (Questionnaire Step 4): Kemampuan Bahasa & Keahlian Khusus
   languages: LanguageSkill[];
-  guidingStyle: string;
   specialSkills: string[];
   personalBio: string;
 
-  // Step 5: Ketersediaan & Komitmen
+  // Step 4 (Questionnaire Step 5): Kesiapan & Komitmen
   availabilityStatus: string;
   assignmentScope: string;
   emergencyContactName: string;
@@ -76,7 +76,7 @@ export const DEFAULT_AVATARS = [
 ];
 
 export const INITIAL_PROFILE: TourLeaderProfile = {
-  // Akun Pengguna Terhubung (dari menu profile yang sudah ada)
+  // Akun Pengguna Terhubung
   fullName: 'Arif Wibisono, S.Par',
   nickname: 'Arif',
   gender: 'Pria',
@@ -84,13 +84,14 @@ export const INITIAL_PROFILE: TourLeaderProfile = {
   email: 'arif.wibisono@panoramatours.id',
   city: 'Jabodetabek',
   cityOther: '',
+  domicile: 'Jabodetabek',
+  domicileOther: '',
+  religion: 'Islam',
   uniformSize: 'L',
   instagram: '@arif.adventure',
   avatarUrl: DEFAULT_AVATARS[1],
 
-  // Step 1: Jam Terbang & Spesialisasi Destinasi
-  yearsExperience: '',
-  totalTripsCount: '',
+  // Step 1: Spesialisasi Destinasi & Tipe Wisatawan
   domesticDestinations: [],
   internationalDestinations: [],
   preferredGroupType: [],
@@ -104,16 +105,15 @@ export const INITIAL_PROFILE: TourLeaderProfile = {
   firstAidCertified: '',
   documents: [],
 
-  // Step 3: Kemampuan Bahasa, Karakter & Keahlian
+  // Step 3 (Questionnaire Step 4): Kemampuan Bahasa & Keahlian Khusus
   languages: [
     { language: 'Bahasa Indonesia', level: 'Fasih (Fluent)' },
     { language: 'Bahasa Inggris', level: 'Menengah' }
   ],
-  guidingStyle: '',
   specialSkills: [],
   personalBio: '',
 
-  // Step 4: Kesiapan & Komitmen
+  // Step 4 (Questionnaire Step 5): Kesiapan & Komitmen
   availabilityStatus: '',
   assignmentScope: '',
   emergencyContactName: '',
